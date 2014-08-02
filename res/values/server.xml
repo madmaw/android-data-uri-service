@@ -1,0 +1,3 @@
+<resources>
+    <integer name="port">10101</integer>
+</resources>

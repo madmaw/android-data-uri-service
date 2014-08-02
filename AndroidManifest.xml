@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="datauri.service">
+
+    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="9"/>
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <supports-screens android:anyDensity="true" android:largeScreens="true" android:normalScreens="true" android:resizeable="true" android:smallScreens="true"/>
+
+    <application>
+        <activity
+                android:name=".ADUSActivity"
+                android:enabled="true"
+                android:exported="true"
+                android:theme="@android:style/Theme.NoDisplay"
+                android:launchMode="singleInstance"
+                android:process="datauri.service"
+                android:excludeFromRecents="true"
+                android:stateNotNeeded="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="data" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

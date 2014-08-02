@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>android-data-uri-service</groupId>
+    <artifactId>android-data-uri-service</artifactId>
+    <version>1.0</version>
+    <packaging>apk</packaging>
+    <name>Android DataURI Service</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>android</artifactId>
+            <version>2.2.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.4</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+                <artifactId>android-maven-plugin</artifactId>
+                <version>3.8.0</version>
+                <configuration>
+                    <androidManifestFile>${project.basedir}/AndroidManifest.xml</androidManifestFile>
+                    <assetsDirectory>${project.basedir}/assets</assetsDirectory>
+                    <resourceDirectory>${project.basedir}/res</resourceDirectory>
+                    <nativeLibrariesDirectory>${project.basedir}/src/main/native</nativeLibrariesDirectory>
+                    <!--
+                    <deleteConflictingFiles>true</deleteConflictingFiles>
+                    -->
+                    <extractDuplicates>true</extractDuplicates>
+                    <undeployBeforeDeploy>true</undeployBeforeDeploy>
+                    <!-- required to (re)build apache velocity -->
+
+                    <sdk>
+                        <platform>7</platform>
+                    </sdk>
+                </configuration>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>update-manifest</id>
+                        <goals>
+                            <goal>manifest-update</goal>
+                        </goals>
+                        <configuration>
+                            <manifestVersionCodeUpdateFromVersion>true</manifestVersionCodeUpdateFromVersion>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <profiles>
+		<profile><!-- test profile. uses keystore defined in keystore.* properties. signs and zipaligns the app to the target folder-->
+			<id>test</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+
+				<defaultGoal>install</defaultGoal>
+				<finalName>${project.artifactId}-${project.version}-test</finalName>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jarsigner-plugin</artifactId>
+						<version>1.2</version>
+						<executions>
+							<execution>
+								<id>signing</id>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+								<phase>package</phase>
+								<inherited>true</inherited>
+								<configuration>
+									<includes>
+										<include>${project.build.directory}/${project.build.finalName}.apk</include>
+									</includes>
+									<keystore>${project.basedir}/keystore/test.keystore</keystore>
+									<storepass>cbdforms-test</storepass>
+									<keypass>cbdforms-test</keypass>
+									<alias>cbdforms-android-test</alias>
+									<verbose>true</verbose>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+						<artifactId>android-maven-plugin</artifactId>
+						<configuration>
+                            <resourceOverlayDirectory>${project.basedir}/res-test</resourceOverlayDirectory>
+							<zipalign>
+								<verbose>true</verbose>
+								<skip>false</skip><!-- defaults to true -->
+								<inputApk>${project.build.directory}/${project.build.finalName}.apk</inputApk>
+								<outputApk>${project.build.directory}/android-data-uri-service-${project.version}-test.apk</outputApk>
+							</zipalign>
+							<sign>
+								<debug>false</debug>
+							</sign>
+                            <classifier>test</classifier>
+						</configuration>
+						<executions>
+							<execution>
+								<id>zipalign</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>zipalign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+        <profile><!-- release profile. uses keystore defined in keystore.* properties. signs and zipaligns the app to the target folder-->
+            <id>release</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+
+                <defaultGoal>install</defaultGoal>
+                <finalName>${project.artifactId}-${project.version}</finalName>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jarsigner-plugin</artifactId>
+                        <version>1.2</version>
+                        <executions>
+                            <execution>
+                                <id>signing</id>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <inherited>true</inherited>
+                                <configuration>
+                                    <includes>
+                                        <include>${project.build.directory}/${project.build.finalName}.apk</include>
+                                    </includes>
+                                    <keystore>${project.basedir}/keystore/release.keystore</keystore>
+                                    <storepass>adus123abcD</storepass>
+                                    <keypass>adus123abcD</keypass>
+                                    <alias>adus</alias>
+                                    <verbose>true</verbose>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+                        <artifactId>android-maven-plugin</artifactId>
+                        <configuration>
+                            <release>true</release>
+
+                            <resourceOverlayDirectory>${project.basedir}/res-release</resourceOverlayDirectory>
+                            <zipalign>
+                                <verbose>true</verbose>
+                                <skip>false</skip><!-- defaults to true -->
+                                <inputApk>${project.build.directory}/${project.build.finalName}.apk</inputApk>
+                                <outputApk>${project.build.directory}/adus-${project.version}.apk</outputApk>
+                            </zipalign>
+                            <sign>
+                                <debug>false</debug>
+                            </sign>
+                            <classifier>release</classifier>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>zipalign</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>zipalign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+		<profile><!-- builds an debug signed apk-->
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<defaultGoal>install</defaultGoal>
+				<finalName>${project.artifactId}-${project.version}-DEV</finalName>
+				<plugins>
+					<plugin>
+						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+						<artifactId>android-maven-plugin</artifactId>
+						<configuration>
+                            <resourceOverlayDirectory>${project.basedir}/res-dev</resourceOverlayDirectory>
+							<sign>
+								<debug>true</debug>
+							</sign>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>
