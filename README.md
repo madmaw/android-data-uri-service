@@ -6,7 +6,9 @@ It would be nice if browsers registered for data URIs, then you could launch con
 
 ![QR Code](https://raw.githubusercontent.com/madmaw/android-data-uri-service/master/qrcode.png)
 
-If you scan this before you have installed the app, the device will probably complain. Afterward, it will launch a website, even if you aren't connected to the Internet.
+If you scan the above QR code before you have installed the app, the device will probably complain. Afterward, it will launch a website, even if you aren't connected to the Internet.
+
+You can download the latest build of the app from https://raw.githubusercontent.com/madmaw/android-data-uri-service/master/target/adus-1.0.apk
 
 I didn't make the demo, but took it from here http://js1k.com/2014-dragons/demo/1664
 
